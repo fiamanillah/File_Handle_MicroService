@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import apiKeyRoutes from '@routes/apiKeyRoutes';
 import { initializeDefaultAdmin } from '@models/Admin';
 import authRoutes from '@routes/authRoutes';
+import uploadRoutes from '@routes/filesRoutes';
+
 dotenv.config();
 
 const app = express();
@@ -18,10 +20,11 @@ app.get('/health', (_req, res) => {
 });
 
 initializeDefaultAdmin();
-
 // Routes
 app.use('/api/keys', apiKeyRoutes);
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api', uploadRoutes);
 
 export default app;

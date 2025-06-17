@@ -3,15 +3,15 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AdminModel } from '../models/Admin';
 
-declare global {
-  namespace Express {
-    interface Request {
-      admin?: {
-        username: string;
-      };
-    }
+declare module 'express' {
+  interface Request {
+    admin?: {
+      username: string;
+    };
   }
 }
+
+export {};
 
 export const authenticateAdmin = async (
   req: Request,

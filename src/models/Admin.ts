@@ -8,11 +8,16 @@ interface IAdmin extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const AdminSchema = new Schema<IAdmin>({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  lastLogin: { type: Date },
-});
+const AdminSchema = new Schema<IAdmin>(
+  {
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    lastLogin: { type: Date },
+  },
+  {
+    timestamps: true,
+  },
+);
 
 // Hash password before saving
 AdminSchema.pre('save', async function (next) {

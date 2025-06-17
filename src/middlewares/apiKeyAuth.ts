@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ApiKeyModel } from '../models/ApiKey';
 
-export async function requireApiKey(requiredPermission?: string) {
+export function requireApiKey(requiredPermission?: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
     // 1. Get API key from header
     const apiKey = req.headers['x-api-key'] as string;
