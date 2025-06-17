@@ -1,5 +1,5 @@
 import { upload } from '@config/multer';
-import { uploadFile } from '@controllers/filesController';
+import { uploadFile, deleteFile } from '@controllers/filesController';
 import { Router } from 'express';
 import { requireApiKey } from 'middlewares/apiKeyAuth';
 
@@ -12,4 +12,5 @@ router.post(
   uploadFile,
 );
 
+router.delete('/delete/:id', requireApiKey(), deleteFile);
 export default router;

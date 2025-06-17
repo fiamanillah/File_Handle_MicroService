@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import FileModel from '@models/File';
-
+import fs from 'fs';
 interface UploadedFileResponse {
   name: string;
   path: string;
@@ -30,7 +30,7 @@ export const uploadFile = async (req: Request, res: Response) => {
     // Save file metadata to the database
     const filesData: UploadedFileResponse[] = await Promise.all(
       files.map(async (file) => {
-        await FileModel.create({
+        const newFile = await FileModel.create({
           path: file.path,
           size: file.size,
           originalname: file.originalname,
@@ -38,12 +38,7 @@ export const uploadFile = async (req: Request, res: Response) => {
           mimetype: file.mimetype,
         });
 
-        return {
-          name: file.originalname,
-          path: file.path,
-          size: file.size,
-          type: file.mimetype,
-        };
+        return newFile;
       }),
     );
 
@@ -54,5 +49,30 @@ export const uploadFile = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error uploading files:', error);
     res.status(500).json({ error: 'Failed to upload files' });
+  }
+};
+
+export const deleteFile = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const file = await FileModel.findByIdAndDelete(id);
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    fs.unlink(file.path, (err) => {
+      if (err) {
+        console.error('Error deleting file from filesystem:', err);
+        return res
+          .status(500)
+          .json({ error: 'Failed to delete file from filesystem' });
+      }
+    });
+
+    res.json({ message: 'File deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ error: 'Failed to delete file' });
   }
 };
