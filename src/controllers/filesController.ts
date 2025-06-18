@@ -27,7 +27,7 @@ export const uploadFile = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    const baseUrl = `${req.protocol}://${req.get('host')}/files/`;
+    const baseUrl = `${process.env.BASE_URL || 'http://localhost:3000/'}`;
 
     // Save file metadata to the database
     const filesData: UploadedFileResponse[] = await Promise.all(
