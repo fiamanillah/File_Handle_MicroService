@@ -5,6 +5,8 @@ import { authenticateAdmin } from 'middlewares/auth';
 
 const router = express.Router();
 
+router.get('/', authenticateAdmin);
+
 // Generate new API key (protected by admin auth)
 router.post('/', authenticateAdmin, generateApiKey);
 

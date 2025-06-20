@@ -11,8 +11,6 @@ declare module 'express' {
   }
 }
 
-export {};
-
 export const authenticateAdmin = async (
   req: Request,
   res: Response,
@@ -20,7 +18,7 @@ export const authenticateAdmin = async (
 ) => {
   try {
     // Get token from header
-    const token = req.headers.authorization?.split(' ')[1];
+    const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
 
     if (!token) {
       return res.status(401).json({ error: 'Authentication required' });

@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { AdminModel } from '../models/Admin';
+import { logger } from '@utils/logger';
 
 export const loginAdmin = async (req: Request, res: Response) => {
   try {
@@ -30,11 +31,20 @@ export const loginAdmin = async (req: Request, res: Response) => {
       { expiresIn: '1h' },
     );
 
-    res.json({
-      token,
-      username: admin.username,
-      expiresIn: 3600, // 1 hour in seconds
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     });
+
+    // res.json({
+    //   token,
+    //   username: admin.username,
+    //   expiresIn: 3600, // 1 hour in seconds
+    // });
+
+    logger.info(`Admin ${admin.username} logged in successfully`);
+
+    res.redirect('/dashboard');
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });

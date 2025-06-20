@@ -6,7 +6,8 @@ import { initializeDefaultAdmin } from '@models/Admin';
 import authRoutes from '@routes/authRoutes';
 import uploadRoutes from '@routes/filesRoutes';
 import cookieParser from 'cookie-parser';
-
+import dashboardRoutes from '@routes/dashboardRoutes';
+import viewRoutes from '@routes/viewRoutes';
 dotenv.config();
 
 const app = express();
@@ -15,13 +16,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 // view engine setup
 app.set('view engine', 'ejs');
 app.set('views', 'src/views');
 
-// Serve static files from the public directory
-app.use(express.static('src/public'));
+// Static files middleware
+app.use(express.static('public'));
 
 // Health Check
 app.get('/health', (_req, res) => {
@@ -32,7 +34,7 @@ app.get('/', (req, res) => {
   res.render('index', {
     title: 'Home Page',
     heading: 'Welcome to My Site',
-    userLoggedIn: true,
+    userLoggedIn: false,
     username: 'JohnDoe',
     items: [{ name: 'Item 1' }, { name: 'Item 2' }, { name: 'Item 3' }],
   });
@@ -47,5 +49,9 @@ app.use('/api/keys', apiKeyRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use('/api', uploadRoutes);
+
+app.use('/dashboard', dashboardRoutes);
+
+app.use('/', viewRoutes);
 
 export default app;

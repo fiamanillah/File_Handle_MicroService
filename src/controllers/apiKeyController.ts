@@ -28,6 +28,11 @@ export const generateApiKey = async (req: Request, res: Response) => {
     res.status(201).json({ key: newApiKey.key, serviceName, permissions });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
+    logger.error('Error generating API key', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      serviceName: req.body.serviceName,
+      permissions: req.body.permissions,
+    });
   }
 };
 
@@ -45,7 +50,28 @@ export const revokeApiKey = async (req: Request, res: Response) => {
     }
 
     res.json({ message: 'API key revoked', key: updated.key });
+    logger.info(`Revoked API key: ${key}`, {
+      key: updated.key,
+      serviceName: updated.serviceName,
+      permissions: updated.permissions,
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
+    logger.error('Error revoking API key', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      key: req.params.key,
+    });
+  }
+};
+
+export const getApiKeys = async (req: Request, res: Response) => {
+  try {
+    const apiKeys = await ApiKeyModel.find({ isActive: true });
+    res.json(apiKeys);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+    logger.error('Error fetching API keys', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
   }
 };
