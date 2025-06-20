@@ -25,7 +25,7 @@ export const generateApiKey = async (req: Request, res: Response) => {
       permissions,
       key: newApiKey.key,
     });
-    res.status(201).json({ key: newApiKey.key, serviceName, permissions });
+    res.redirect('/api/keys');
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
     logger.error('Error generating API key', {
@@ -67,11 +67,30 @@ export const revokeApiKey = async (req: Request, res: Response) => {
 export const getApiKeys = async (req: Request, res: Response) => {
   try {
     const apiKeys = await ApiKeyModel.find({ isActive: true });
-    res.json(apiKeys);
+    res.render('dashboard/apiKeys', {
+      title: 'API Keys',
+      heading: 'API Keys Management',
+      apiKeys: apiKeys.map((key) => ({
+        serviceName: key.serviceName,
+        key: key.key,
+        permissions: key.permissions,
+      })),
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
     logger.error('Error fetching API keys', {
       error: error instanceof Error ? error.message : 'Unknown error',
     });
   }
+};
+
+export const generateApiKeyForm = (req: Request, res: Response) => {
+  res.render('dashboard/generateApiKey', {
+    title: 'Generate API Key',
+    heading: 'Generate New API Key',
+    userLoggedIn: req.admin ? true : false,
+    username: req.admin ? req.admin.username : '',
+    permissions: ['read', 'write', 'delete'], // Example permissions
+    serviceName: '',
+  });
 };

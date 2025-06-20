@@ -44,7 +44,7 @@ export const loginAdmin = async (req: Request, res: Response) => {
 
     logger.info(`Admin ${admin.username} logged in successfully`);
 
-    res.redirect('/dashboard');
+    res.redirect('/api/keys');
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed' });

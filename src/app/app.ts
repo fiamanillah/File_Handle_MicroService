@@ -6,8 +6,8 @@ import { initializeDefaultAdmin } from '@models/Admin';
 import authRoutes from '@routes/authRoutes';
 import uploadRoutes from '@routes/filesRoutes';
 import cookieParser from 'cookie-parser';
-import dashboardRoutes from '@routes/dashboardRoutes';
 import viewRoutes from '@routes/viewRoutes';
+import { authenticateAdmin } from 'middlewares/auth';
 dotenv.config();
 
 const app = express();
@@ -30,14 +30,8 @@ app.get('/health', (_req, res) => {
   res.json({ message: 'Server is running' });
 });
 
-app.get('/', (req, res) => {
-  res.render('index', {
-    title: 'Home Page',
-    heading: 'Welcome to My Site',
-    userLoggedIn: false,
-    username: 'JohnDoe',
-    items: [{ name: 'Item 1' }, { name: 'Item 2' }, { name: 'Item 3' }],
-  });
+app.get('/', authenticateAdmin, (req, res) => {
+  res.redirect('/api/keys');
 });
 
 // Initialize default admin user
@@ -49,8 +43,6 @@ app.use('/api/keys', apiKeyRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use('/api', uploadRoutes);
-
-app.use('/dashboard', dashboardRoutes);
 
 app.use('/', viewRoutes);
 
