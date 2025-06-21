@@ -16,3 +16,16 @@ npm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+docker-compose.override.yml
+docker-compose.prod.yml
+docker-compose.dev.yml
+docker-compose.test.yml
+docker-compose.local.yml
+docker-compose.yml
+
+# Build directories
+dist/
+build/
+
+mongodb_data/
