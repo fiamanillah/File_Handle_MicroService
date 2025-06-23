@@ -1,5 +1,9 @@
 import { upload } from '@config/multer';
-import { uploadFile, deleteFile } from '@controllers/filesController';
+import {
+  uploadFile,
+  deleteFile,
+  deleteMultipleFiles,
+} from '@controllers/filesController';
 import { Router } from 'express';
 import { requireApiKey } from 'middlewares/apiKeyAuth';
 
@@ -13,4 +17,6 @@ router.post(
 );
 
 router.delete('/delete/:id', requireApiKey(), deleteFile);
+
+router.post('/delete-multiple', requireApiKey(), deleteMultipleFiles);
 export default router;
